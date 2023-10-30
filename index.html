@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        #finances {
+            width: 300px;
+            margin: 0 auto;
+        }
+
+        table {
+            width: 100%;
+        }
+
+        th,
+        td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Sistema Financeiro</h1>
+    <div id="finances">
+        <h2>Transações</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Tipo</th>
+                    <th>Descrição</th>
+                    <th>Valor</th>
+                </tr>
+            </thead>
+            <tbody id="transaction-list">
+
+            </tbody>
+        </table>
+        <h3>Saldo: <span id="balance">0.00</span></h3>
+        <select id="transaction-type">
+            <option value="Entrada">Entrada</option>
+            <option value="Saída">Saída</option>
+        </select>
+        <input type="text" id="description" placeholder="Descrição">
+        <input type="number" id="amount" placeholder="Valor">
+        <button onclick="addTransaction()">Adicionar Transação</button>
+    </div>
+
+    <script>
+        let transactions = [];
+        let balance = 0;
+
+        function addTransaction() {
+            const transactionType = document.getElementById('transaction-type').value;
+            const description = document.getElementById('description').value;
+            const amount = parseFloat(document.getElementById('amount').value);
+
+            if (!description || isNaN(amount)) {
+                alert('Por favor, preencha uma descrição e um valor válido.');
+                return;
+            }
+
+            if (transactionType === 'Entrada') {
+                balance += amount;
+            } else if (transactionType === 'Saída') {
+                balance -= amount;
+            }
+
+            transactions.push({ type: transactionType, description, amount });
+            updateTransactionList();
+            updateBalance();
+
+            document.getElementById('transaction-type').value = 'entrada';
+            document.getElementById('description').value = '';
+            document.getElementById('amount').value = '';
+        }
+
+        function updateTransactionList() {
+            const transactionList = document.getElementById('transaction-list');
+            transactionList.innerHTML = '';
+            for (let transaction of transactions) {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${transaction.type}</td><td>${transaction.description}</td><td>${transaction.amount.toFixed(2)}</td>`;
+                transactionList.appendChild(row);
+            }
+        }
+
+        function updateBalance() {
+            document.getElementById('balance').textContent = balance.toFixed(2);
+        }
+    </script>
+</body>
+
+</html>
